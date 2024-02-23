@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="hairstyle_choices">
+        <item>Spikes Hair</item>
+        <item>One Spike Hair</item>
+        <item>One Strand Hair</item>
+    </string-array>
+</resources>
