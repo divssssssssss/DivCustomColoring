@@ -4,123 +4,102 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.RadioGroup;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    RadioGroup rad = findViewById(R.id.group);
-    SeekBar re = findViewById(R.id.red);
-    SeekBar gre = findViewById(R.id.green);
-    SeekBar blu = findViewById(R.id.blue);
+    private TextView elementName;
+    private SeekBar redSeekBar, greenSeekBar, blueSeekBar;
+    private Face fa;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = findViewById(R.id.rand);
-        Face fa = findViewById(R.id.face);
-        button.setOnClickListener(fa);
+        // Initialize UI elements
+        elementName = findViewById(R.id.element);
+        redSeekBar = findViewById(R.id.red);
+        greenSeekBar = findViewById(R.id.green);
+        blueSeekBar = findViewById(R.id.blue);
+        fa = findViewById(R.id.face);
 
-        //adjust the seekbars based off of user input
-
-        re.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        // Set up SeekBar listeners
+        redSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean scroll) {
-
-                //adjust red seekbar only
-                if (rad.getCheckedRadioButtonId() == R.id.hair) {
-                    fa.setHairColor(Color.rgb(progress, gre.getProgress(), blu.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.eyes) {
-                    fa.setEyeColor(Color.rgb(progress, gre.getProgress(), blu.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.skin) {
-                    fa.setSkinColor(Color.rgb(progress, gre.getProgress(), blu.getProgress()));
-                }
-                fa.invalidate();
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateElementColors();
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        gre.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean scroll) {
-
-                //adjust green seekbar only
-                if (rad.getCheckedRadioButtonId() == R.id.hair) {
-                    fa.setHairColor(Color.rgb(re.getProgress(), progress, blu.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.eyes) {
-                    fa.setEyeColor(Color.rgb(re.getProgress(), progress, blu.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.skin) {
-                    fa.setSkinColor(Color.rgb(re.getProgress(), progress, blu.getProgress()));
-                }
-                fa.invalidate();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        blu.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean scroll) {
-
-                //adjust blue seekbar only
-                if (rad.getCheckedRadioButtonId() == R.id.hair) {
-                    fa.setHairColor(Color.rgb(re.getProgress(), progress, gre.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.eyes) {
-                    fa.setEyeColor(Color.rgb(re.getProgress(), progress, gre.getProgress()));
-                }
-                else if (rad.getCheckedRadioButtonId() == R.id.skin) {
-                    fa.setSkinColor(Color.rgb(re.getProgress(), progress, gre.getProgress()));
-                }
-                fa.invalidate();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Update the values based off the drawing of the face
-        private void UpdateValues() {
-            rad = findViewById(R.id.group);
+        greenSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateElementColors();
+            }
 
-            if (rad.getCheckedRadioButtonId() == R.id.hair) {
-                updateSeekBars(fa.getHairColor());
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        blueSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateElementColors();
             }
-            else if (rad.getCheckedRadioButtonId() == R.id.eyes) {
-                updateSeekBars(fa.getEyeColor());
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Set up onTouchEvent listener for Face view
+
+        fa.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float x = event.getX();
+                float y = event.getY();
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // Handle touch down event
+                    fa.handleTouch((int) x, (int) y, elementName, redSeekBar, greenSeekBar, blueSeekBar);
+                }
+
+                return true;
             }
-            else if (rad.getCheckedRadioButtonId() == R.id.skin) {
-                updateSeekBars(fa.getSkinColor());
-            }
-        }
-    }
-    // Update the seekbars
-    private void updateSeekBars(int color) {
-        re.setProgress(Color.red(color));
-        gre.setProgress(Color.green(color));
-        blu.setProgress(Color.blue(color));
+        });
     }
 
+    // Method to update the colors of elements based on SeekBar positions
+    private void updateElementColors() {
+        int red = redSeekBar.getProgress();
+        int green = greenSeekBar.getProgress();
+        int blue = blueSeekBar.getProgress();
+        fa.setColors(
+                Color.LTGRAY,  // Moon color
+                Color.BLACK,   // House color
+                Color.YELLOW,  // Roof color
+                Color.GREEN,   // Door color
+                Color.MAGENTA, // Window color
+                Color.RED      // Chimney color
+        );
+    }
+//end of MainActivity
 }

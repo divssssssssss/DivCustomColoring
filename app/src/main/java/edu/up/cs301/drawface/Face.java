@@ -1,30 +1,44 @@
 package edu.up.cs301.drawface;
 
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.content.Context;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
-public class Face extends SurfaceView implements View.OnClickListener {
-    //initialize variables for the face class
-    public int skinColor = 0;
-    public int eyeColor = 0;
-    public int hairColor = 0;
-    public int hairStyle = 0;
+public class Face extends SurfaceView  {
 
-    //the paints to draw the face
-    Paint skin = new Paint();
-    Paint eyes = new Paint();
-    Paint hair = new Paint();
-    Paint mouth = new Paint();
+    private TextView elementNameTextView;
+    private SeekBar redSeekBar, greenSeekBar, blueSeekBar;
 
-    //the dimensions of the face
-    public static final float faceWidth = 500.0f;
-    public static final float faceHeight = 500.0f;
+    private Element[] elem;
+    //private MainActivity.OnElementSelectedListener elementSelectedListener;
+
+    //the paints to draw the house
+    Paint moon = new Paint();
+    Paint house = new Paint();
+    Paint roof = new Paint();
+    Paint door = new Paint();
+    Paint window = new Paint();
+    Paint chimney = new Paint();
+
+    // Variables to hold the current colors of the elements
+    private int moonColor = Color.LTGRAY;
+    private int houseColor = Color.BLACK;
+    private int roofColor = Color.YELLOW;
+    private int doorColor = Color.GREEN;
+    private int windowColor = Color.MAGENTA;
+    private int chimneyColor = Color.RED;
+
+
 
 
     public Face(Context context, AttributeSet attrs) {
@@ -33,115 +47,233 @@ public class Face extends SurfaceView implements View.OnClickListener {
         //This is essential or your onDraw method won't get called
         setWillNotDraw(false);
 
+        // Initialize references to the TextView and SeekBars
+        elementNameTextView = ((Activity) context).findViewById(R.id.element);
+        redSeekBar = ((Activity) context).findViewById(R.id.red);
+        greenSeekBar = ((Activity) context).findViewById(R.id.green);
+        blueSeekBar = ((Activity) context).findViewById(R.id.blue);
+
         //Setup our palette
-        skin.setColor(0xFFFFFACD);  //pale yellow
-        skin.setStyle(Paint.Style.FILL);
-        eyes.setColor(Color.BLACK);  //black
-        eyes.setStyle(Paint.Style.FILL);
-        hair.setColor(Color.BLACK);  //black
-        hair.setStyle(Paint.Style.FILL);
-        mouth.setColor(Color.BLACK);  //black
-        mouth.setStyle(Paint.Style.FILL);
+        moon.setColor(Color.LTGRAY);  //light gray
+        moon.setStyle(Paint.Style.FILL);
+        house.setColor(Color.BLACK);  //black
+        house.setStyle(Paint.Style.FILL);
+        roof.setColor(Color.YELLOW);  //yellow
+        roof.setStyle(Paint.Style.FILL);
+        door.setColor(Color.GREEN);  //green
+        door.setStyle(Paint.Style.FILL);
+        window.setColor(Color.MAGENTA);  //magenta
+        window.setStyle(Paint.Style.FILL);
+        chimney.setColor(Color.RED);  //red
+        chimney.setStyle(Paint.Style.FILL);
 
         setBackgroundColor(Color.WHITE);
 
-        this.randomize();
+        // Initialize elements array
+        elem = createElements();
 
-    }
-
-    //helper method to generate the random numbers for the RGB values
-    private int getRandomColor() {
-        return Color.rgb(
-                (int) (Math.random() * 255),
-                (int) (Math.random() * 255),
-                (int) (Math.random() * 255)
-        );
+    //end of face ctor
     }
 
-    //helper method to generate a random hairstyle
-    private int getRandomHairstyle() {
-        return (int) (Math.random() * 3);
-    }
+    private Element[] createElements() {
+        Element[] elem = new Element[6];
 
-    //set the variables by using the getter methods
-    public void randomize() {
-        // Generate random colors
-        skinColor = getRandomColor();
-        eyeColor = getRandomColor();
-        hairColor = getRandomColor();
-        // Randomly select a hairstyle
-        hairStyle = getRandomHairstyle();
-    }
-    public int getSkinColor() {
-        return this.skinColor;
-    }
-    public int getHairColor() {
-        return this.hairColor;
-    }
-    public int getEyeColor() {
-        return this.eyeColor;
-    }
-    public void setHairColor(int hairColor) {
-        this.hairColor = hairColor;
-    }
-    public void setSkinColor(int skinColor) {
-        this.skinColor = skinColor;
-    }
-    public void setEyeColor(int eyeColor) {
-        this.eyeColor = eyeColor;
-    }
-    public void setHairStyle(int hairStyle) {
-        this.hairStyle = hairStyle;
-    }
+        // Initialize elements with names and colors
+        elem[0] = new Element("Moon", moonColor);
+        elem[1] = new Element("House", houseColor);
+        elem[2] = new Element("Roof", roofColor);
+        elem[3] = new Element("Door", doorColor);
+        elem[4] = new Element("Window", windowColor);
+        elem[5] = new Element("Chimney", chimneyColor);
 
-    public int getHairStyle() {
-        return this.hairStyle;
+        return elem;
     }
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
-    //draw the face
-    public void onDraw(Canvas g) {
-        //face circle
-        float centerX = faceWidth;
-        float centerY = faceHeight;
-        float radius = 300.0f;
-        g.drawCircle(centerX, centerY, radius, skin);
+        // Draw the moon
+        float centerX = 150.0f;
+        float centerY = 150.0f;
+        float radius = 100.0f;
+        canvas.drawCircle(centerX, centerY, radius, moon);
 
-        // Draw eyes (smaller circles)
-        float eyeRadius = 20f;
-        float leftEyeX = centerX - 40f;
-        float rightEyeX = centerX + 40f;
-        float eyeY = centerY - 30f;
+        // Draw the house
+        int width = getWidth();
+        int height = getHeight();
+        canvas.drawRect(width / 4, height / 4, width * 3 / 4, height * 3 / 4, house);
 
-        g.drawCircle(leftEyeX, eyeY, eyeRadius, eyes);
-        g.drawCircle(rightEyeX, eyeY, eyeRadius, eyes);
+        // Draw the roof
+        Path roofPath = new Path();
+        roofPath.moveTo(width / 4, height / 4);
+        roofPath.lineTo(width / 2, height / 8);
+        roofPath.lineTo(width * 3 / 4, height / 4);
+        roofPath.close();
+        canvas.drawPath(roofPath, roof);
 
-        // Draw mouth (arc)
-        RectF mouthRect = new RectF(centerX - 40f, centerY + 20f, centerX + 40f, centerY + 60f);
-        g.drawArc(mouthRect, 0f, 180f, false, mouth);
+        // Draw the door
+        canvas.drawRect(width * 5 / 12, height * 3 / 4, width * 7 / 12, height / 2, door);
 
-        //Draw hair
-        float hairwidth = 10f;
-        float hairlength = 700f;
-        if (hairStyle == 1) {
-            g.drawLine(350, 250, 350, 650, hair);
-            g.drawLine(300, 250, 350, 650, hair);
-            g.drawLine(750, 250, 750, 650, hair);
-            g.drawLine(700, 250, 750, 650, hair);
-        } else if (hairStyle == 2) {
-            g.drawLine(350, 250, 350, 650, hair);
-            g.drawLine(300, 250, 350, 650, hair);
-        } else if (hairStyle == 3) {
-            g.drawLine(500,250,500,150, hair);
-        }
+        // Draw the window
+        canvas.drawRect(width * 9 / 24, height / 3, width * 11 / 24, height / 2, window);
+
+        // Draw the chimney
+        canvas.drawRect(width * 2 / 3, height / 4 - height / 8, width * 3 / 4, height / 4, chimney);
+        canvas.drawLine(width * 3 / 4, height / 4 - height / 8, width * 3 / 4, height / 4, chimney);
+    //end of onDraw
     }
 
     @Override
-    public void onClick(View v) {
-        this.randomize();
-        this.invalidate();
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
 
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                // Handle touch down event
+                handleTouch(x, y, elementNameTextView, redSeekBar, greenSeekBar, blueSeekBar);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // Handle touch move event (if necessary)
+                break;
+            case MotionEvent.ACTION_UP:
+                // Handle touch up event (if necessary)
+                break;
+        }
+
+        return true;
     }
 
+    void handleTouch(int x, int y, TextView elementNameTextView, SeekBar redSeekBar, SeekBar greenSeekBar, SeekBar blueSeekBar) {
+        int width = getWidth();
+        int height = getHeight();
+
+        // Drawn coordinates of each element
+        float moonCenterX = 150.0f;
+        float moonCenterY = 150.0f;
+        float moonRadius = 100.0f;
+
+        float houseStartX = width / 4;
+        float houseStartY = height / 4;
+        float houseEndX = width * 3 / 4;
+        float houseEndY = height * 3 / 4;
+
+        float roofLeftX = width / 4;
+        float roofTopY = height / 4;
+        float roofRightX = width * 3 / 4;
+        float roofBottomY = height / 8;
+
+        float doorStartX = width * 5 / 12;
+        float doorStartY = height * 3 / 4;
+        float doorEndX = width * 7 / 12;
+        float doorEndY = height / 2;
+
+        float windowStartX = width * 9 / 24;
+        float windowStartY = height / 3;
+        float windowEndX = width * 11 / 24;
+        float windowEndY = height / 2;
+
+        float chimneyStartX = width * 2 / 3;
+        float chimneyStartY = height / 4 - height / 8;
+        float chimneyEndX = width * 3 / 4;
+        float chimneyEndY = height / 4;
+
+        // Check if the touch coordinates fall within the bounds of each element
+        if (x >= moonCenterX - moonRadius && x <= moonCenterX + moonRadius &&
+                y >= moonCenterY - moonRadius && y <= moonCenterY + moonRadius) {
+            // Update UI for the moon element
+            elementNameTextView.setText("Moon");
+            redSeekBar.setProgress(Color.red(moon.getColor()));
+            greenSeekBar.setProgress(Color.green(moon.getColor()));
+            blueSeekBar.setProgress(Color.blue(moon.getColor()));
+        } else if (x >= windowStartX && x <= windowStartY && y >= windowEndX && y <= windowEndY) {
+            // Update UI for the roof element
+            elementNameTextView.setText("Window");
+            redSeekBar.setProgress(Color.red(window.getColor()));
+            greenSeekBar.setProgress(Color.green(window.getColor()));
+            blueSeekBar.setProgress(Color.blue(window.getColor()));
+        } else if (x >= doorStartX && x <= doorStartY && y >= doorEndX && y <= doorEndY) {
+            // Update UI for the roof element
+            elementNameTextView.setText("Door");
+            redSeekBar.setProgress(Color.red(door.getColor()));
+            greenSeekBar.setProgress(Color.green(door.getColor()));
+            blueSeekBar.setProgress(Color.blue(door.getColor()));
+        } else if (x >= chimneyStartX && x <= chimneyStartY && y >= chimneyEndX && y <= chimneyEndY) {
+            // Update UI for the roof element
+            elementNameTextView.setText("Chimney");
+            redSeekBar.setProgress(Color.red(chimney.getColor()));
+            greenSeekBar.setProgress(Color.green(chimney.getColor()));
+            blueSeekBar.setProgress(Color.blue(chimney.getColor()));
+        } else if (x >= roofLeftX && x <= roofRightX && y >= roofTopY && y <= roofBottomY) {
+            // Update UI for the roof element
+            elementNameTextView.setText("Roof");
+            redSeekBar.setProgress(Color.red(roof.getColor()));
+            greenSeekBar.setProgress(Color.green(roof.getColor()));
+            blueSeekBar.setProgress(Color.blue(roof.getColor()));
+        } else if (x >= houseStartX && x <= houseEndX && y >= houseStartY && y <= houseEndY) {
+            // Update UI for the house element
+            elementNameTextView.setText("House");
+            redSeekBar.setProgress(Color.red(house.getColor()));
+            greenSeekBar.setProgress(Color.green(house.getColor()));
+            blueSeekBar.setProgress(Color.blue(house.getColor()));
+        }
+    }
+
+    public void setColors(int moonColor, int houseColor, int roofColor, int doorColor, int windowColor, int chimneyColor) {
+        // Update the paint colors for each element
+        moon.setColor(moonColor);
+        house.setColor(houseColor);
+        roof.setColor(roofColor);
+        door.setColor(doorColor);
+        window.setColor(windowColor);
+        chimney.setColor(chimneyColor);
+
+        // Invalidate the view to trigger a redraw with the updated colors
+        invalidate();
+    }
+
+
+    // Internal class to represent elements
+    private static class Element {
+        private String name;
+        private int color;
+
+        Element(String name, int color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        String getName() {
+            return name;
+        }
+
+        int getColor() {
+            return color;
+        }
+
+//        // Methods to get start and end coordinates of elements
+//        float getStartX() {
+//            // Implement logic to get start X position
+//            return 0;
+//        }
+//
+//        float getStartY() {
+//            // Implement logic to get start Y position
+//            return 0;
+//        }
+//
+//        float getEndX() {
+//            // Implement logic to get end X position
+//            return 0;
+//        }
+//
+//        float getEndY() {
+//            // Implement logic to get end Y position
+//            return 0;
+//        }
+    }
+
+//end of face
 }
 
 /**

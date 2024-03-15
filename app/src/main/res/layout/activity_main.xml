@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="SurfaceView" />
+            android:text="SurfaceView"
+            android:onClick="onElementClicked"/>
 
     </LinearLayout>
 
@@ -32,46 +33,11 @@
             android:orientation="vertical">
 
             <!--Set up spinner to select different hair types-->
-            <Spinner
-                android:id="@+id/style"
+            <TextView
+                android:id="@+id/element"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/hairstyle_choices"
-                android:text="Choose Hairstyle" />
-
-            <!--Set up random face button-->
-            <Button
-                android:id="@+id/rand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RandomFace" />
-
-            <!--Set up radio buttons for skin, hair, eyes-->
-            <RadioGroup
-                android:id="@+id/group"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" >
-
-                <RadioButton
-                    android:id="@+id/skin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Skin" />
-
-                <RadioButton
-                    android:id="@+id/eyes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Eyes" />
-
-                <RadioButton
-                    android:id="@+id/hair"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Hair" />
-
-            </RadioGroup>
+                android:text="yo" />
 
             <!--Set up the seekbars for the RGB values-->
             <TextView
