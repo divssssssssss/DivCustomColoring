@@ -13,8 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView elementName;
     private SeekBar redSeekBar, greenSeekBar, blueSeekBar;
-    private Face fa;
-
+    private CustomElement customElement;
 
 
     @Override
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         redSeekBar = findViewById(R.id.red);
         greenSeekBar = findViewById(R.id.green);
         blueSeekBar = findViewById(R.id.blue);
-        fa = findViewById(R.id.face);
+        customElement = findViewById(R.id.face);
 
         // Set up SeekBar listeners
         redSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up onTouchEvent listener for Face view
 
-        fa.setOnTouchListener(new View.OnTouchListener() {
+        customElement.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 float x = event.getX();
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // Handle touch down event
-                    fa.handleTouch((int) x, (int) y, elementName, redSeekBar, greenSeekBar, blueSeekBar);
+                    customElement.handleTouch((int) x, (int) y, elementName, redSeekBar, greenSeekBar, blueSeekBar);
                 }
 
                 return true;
@@ -87,19 +86,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Method to update the colors of elements based on SeekBar positions
     private void updateElementColors() {
         int red = redSeekBar.getProgress();
         int green = greenSeekBar.getProgress();
         int blue = blueSeekBar.getProgress();
-        fa.setColors(
-                Color.LTGRAY,  // Moon color
-                Color.BLACK,   // House color
-                Color.YELLOW,  // Roof color
-                Color.GREEN,   // Door color
-                Color.MAGENTA, // Window color
-                Color.RED      // Chimney color
-        );
+
+        // Pass the updated color only to the selected element
+        customElement.setSelectedElementColor(Color.rgb(red, green, blue));
     }
+
 //end of MainActivity
 }

@@ -6,17 +6,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.content.Context;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener  {
+public class CustomElement extends SurfaceView   {
 
-    private Element lastTappedElement;
+    private int selectedElementIndex = -1;
+
 
     private TextView elementNameTextView;
     private SeekBar redSeekBar, greenSeekBar, blueSeekBar;
@@ -43,7 +42,7 @@ public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener
 
 
 
-    public Face(Context context, AttributeSet attrs) {
+    public CustomElement(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         //This is essential or your onDraw method won't get called
@@ -146,6 +145,24 @@ public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener
         return true;
     }
 
+    /**
+     External Citation
+     Date: 3/15/2024
+     Problem: To figure out the void handleTouch method
+     Resource:
+     Andrew Nuxoll
+     Solution: Helped me set up and trouble shoot my code.
+     */
+
+    /**
+     External Citation
+     Date: 3/15/2024
+     Problem: To figure out the void handleTouch method
+     Resource:
+     AI
+     Solution: Helped me set up and trouble shoot my code.
+     */
+
     void handleTouch(int x, int y, TextView elementNameTextView, SeekBar redSeekBar, SeekBar greenSeekBar, SeekBar blueSeekBar) {
         int width = getWidth();
         int height = getHeight();
@@ -180,53 +197,80 @@ public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener
         float chimneyEndX = width * 3 / 4;
         float chimneyEndY = height / 4;
 
+        // Reset selected element index
+        selectedElementIndex = -1;
+
+
         // Check if the touch coordinates fall within the bounds of each element
-        if (x >= moonCenterX - moonRadius && x <= moonCenterX + moonRadius &&
-                y >= moonCenterY - moonRadius && y <= moonCenterY + moonRadius) {
-            // Update UI for the moon element
-            elementNameTextView.setText("Moon");
-            redSeekBar.setProgress(Color.red(moon.getColor()));
-            greenSeekBar.setProgress(Color.green(moon.getColor()));
-            blueSeekBar.setProgress(Color.blue(moon.getColor()));
-        } else if (x >= windowStartX && x <= windowEndX && y >= windowStartY && y <= windowEndY) {
-            // Update UI for the window element
-            elementNameTextView.setText("Window");
-            redSeekBar.setProgress(Color.red(window.getColor()));
-            greenSeekBar.setProgress(Color.green(window.getColor()));
-            blueSeekBar.setProgress(Color.blue(window.getColor()));
-        } else if (x >= doorStartX && x <= doorEndX && y >= doorEndY && y <= doorStartY) {
-            // Update UI for the door element
-            elementNameTextView.setText("Door");
-            redSeekBar.setProgress(Color.red(door.getColor()));
-            greenSeekBar.setProgress(Color.green(door.getColor()));
-            blueSeekBar.setProgress(Color.blue(door.getColor()));
-        } else if (x >= chimneyStartX && x <= chimneyEndX && y >= chimneyStartY && y <= chimneyEndY) {
-            // Update UI for the chimney element
-            elementNameTextView.setText("Chimney");
-            redSeekBar.setProgress(Color.red(chimney.getColor()));
-            greenSeekBar.setProgress(Color.green(chimney.getColor()));
-            blueSeekBar.setProgress(Color.blue(chimney.getColor()));
-        } else if (x >= roofLeftX && x <= roofRightX && y >= roofBottomY && y <= roofTopY) {
-            // Update UI for the roof element
-            elementNameTextView.setText("Roof");
-            redSeekBar.setProgress(Color.red(roof.getColor()));
-            greenSeekBar.setProgress(Color.green(roof.getColor()));
-            blueSeekBar.setProgress(Color.blue(roof.getColor()));
-        } else if (x >= houseStartX && x <= houseEndX && y >= houseStartY && y <= houseEndY) {
-            // Update UI for the house element
-            elementNameTextView.setText("House");
-            redSeekBar.setProgress(Color.red(house.getColor()));
-            greenSeekBar.setProgress(Color.green(house.getColor()));
-            blueSeekBar.setProgress(Color.blue(house.getColor()));
+        for (int i = 0; i < elem.length; i++) {
+            if (x >= moonCenterX - moonRadius && x <= moonCenterX + moonRadius &&
+                    y >= moonCenterY - moonRadius && y <= moonCenterY + moonRadius) {
+                // Update UI for the moon element
+                elementNameTextView.setText(elem[0].getName());
+                redSeekBar.setProgress(Color.red(elem[0].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[0].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[0].getColor()));
+                selectedElementIndex = 0;
+                break;
+            } else if (x >= windowStartX && x <= windowEndX && y >= windowStartY && y <= windowEndY) {
+                // Update UI for the window element
+                elementNameTextView.setText(elem[4].getName());
+                redSeekBar.setProgress(Color.red(elem[4].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[4].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[4].getColor()));
+                selectedElementIndex = 4;
+                break;
+            } else if (x >= doorStartX && x <= doorEndX && y >= doorEndY && y <= doorStartY) {
+                // Update UI for the door element
+                elementNameTextView.setText(elem[3].getName());
+                redSeekBar.setProgress(Color.red(elem[3].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[3].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[3].getColor()));
+                selectedElementIndex = 3;
+                break;
+            } else if (x >= chimneyStartX && x <= chimneyEndX && y >= chimneyStartY && y <= chimneyEndY) {
+                // Update UI for the chimney element
+                elementNameTextView.setText(elem[5].getName());
+                redSeekBar.setProgress(Color.red(elem[5].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[5].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[5].getColor()));
+                selectedElementIndex = 5;
+                break;
+
+            } else if (x >= roofLeftX && x <= roofRightX && y >= roofBottomY && y <= roofTopY) {
+                // Update UI for the roof element
+                elementNameTextView.setText(elem[2].getName());
+                redSeekBar.setProgress(Color.red(elem[2].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[2].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[2].getColor()));
+                selectedElementIndex = 2;
+                break;
+
+            } else if (x >= houseStartX && x <= houseEndX && y >= houseStartY && y <= houseEndY) {
+                // Update UI for the house element
+                elementNameTextView.setText(elem[1].getName());
+                redSeekBar.setProgress(Color.red(elem[1].getColor()));
+                greenSeekBar.setProgress(Color.green(elem[1].getColor()));
+                blueSeekBar.setProgress(Color.blue(elem[1].getColor()));
+                selectedElementIndex = 1;
+                break;
+            }
         }
 
-        if (lastTappedElement != null) {
-            int red = redSeekBar.getProgress();
-            int green = greenSeekBar.getProgress();
-            int blue = blueSeekBar.getProgress();
-            lastTappedElement.setColor(Color.rgb(red, green, blue));
-            invalidate(); // Redraw the view
+        if (selectedElementIndex != -1) {
+            elementNameTextView.setText(elem[selectedElementIndex].getName());
+            redSeekBar.setProgress(Color.red(elem[selectedElementIndex].getColor()));
+            greenSeekBar.setProgress(Color.green(elem[selectedElementIndex].getColor()));
+            blueSeekBar.setProgress(Color.blue(elem[selectedElementIndex].getColor()));
         }
+
+//        if (lastTappedElement != null) {
+//            int red = redSeekBar.getProgress();
+//            int green = greenSeekBar.getProgress();
+//            int blue = blueSeekBar.getProgress();
+//            lastTappedElement.setColor(Color.rgb(red, green, blue));
+//            invalidate(); // Redraw the view
+//        }
     }
 
     public void setColors(int moonColor, int houseColor, int roofColor, int doorColor, int windowColor, int chimneyColor) {
@@ -241,28 +285,35 @@ public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener
         // Invalidate the view to trigger a redraw with the updated colors
         invalidate();
     }
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Check if the SeekBar change was initiated by the user
-        if (fromUser) {
-            // Update the color of the most recently tapped element
-            if (lastTappedElement != null) {
-                int red = redSeekBar.getProgress();
-                int green = greenSeekBar.getProgress();
-                int blue = blueSeekBar.getProgress();
-                lastTappedElement.setColor(Color.rgb(red, green, blue));
-                invalidate(); // Redraw the view
+    public void setSelectedElementColor(int color) {
+        if (selectedElementIndex != -1 && selectedElementIndex < elem.length) {
+            elem[selectedElementIndex].setColor(color);
+
+            // Update the corresponding Paint object with the new color
+            switch (selectedElementIndex) {
+                case 0:
+                    moon.setColor(color);
+                    break;
+                case 1:
+                    house.setColor(color);
+                    break;
+                case 2:
+                    roof.setColor(color);
+                    break;
+                case 3:
+                    door.setColor(color);
+                    break;
+                case 4:
+                    window.setColor(color);
+                    break;
+                case 5:
+                    chimney.setColor(color);
+                    break;
             }
+
+            // Invalidate the view to trigger a redraw with the updated color
+            invalidate();
         }
-    }
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 
 
@@ -310,14 +361,6 @@ public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener
  Solution: I used the example code from this AI to form up my code.
  */
 
-/**
- External Citation
- Date: 2/22/2024
- Problem: To figure out the random button
- Resource:
- Andrew Nuxoll
- Solution: Helped me set up and trouble shoot my code.
- */
 
 
 
