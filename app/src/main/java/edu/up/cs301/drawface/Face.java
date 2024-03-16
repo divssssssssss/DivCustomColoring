@@ -14,7 +14,9 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class Face extends SurfaceView  {
+public class Face extends SurfaceView implements SeekBar.OnSeekBarChangeListener  {
+
+    private Element lastTappedElement;
 
     private TextView elementNameTextView;
     private SeekBar redSeekBar, greenSeekBar, blueSeekBar;
@@ -134,10 +136,10 @@ public class Face extends SurfaceView  {
                 handleTouch(x, y, elementNameTextView, redSeekBar, greenSeekBar, blueSeekBar);
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Handle touch move event (if necessary)
+                // Handle touch move event
                 break;
             case MotionEvent.ACTION_UP:
-                // Handle touch up event (if necessary)
+                // Handle touch up event
                 break;
         }
 
@@ -186,25 +188,25 @@ public class Face extends SurfaceView  {
             redSeekBar.setProgress(Color.red(moon.getColor()));
             greenSeekBar.setProgress(Color.green(moon.getColor()));
             blueSeekBar.setProgress(Color.blue(moon.getColor()));
-        } else if (x >= windowStartX && x <= windowStartY && y >= windowEndX && y <= windowEndY) {
-            // Update UI for the roof element
+        } else if (x >= windowStartX && x <= windowEndX && y >= windowStartY && y <= windowEndY) {
+            // Update UI for the window element
             elementNameTextView.setText("Window");
             redSeekBar.setProgress(Color.red(window.getColor()));
             greenSeekBar.setProgress(Color.green(window.getColor()));
             blueSeekBar.setProgress(Color.blue(window.getColor()));
-        } else if (x >= doorStartX && x <= doorStartY && y >= doorEndX && y <= doorEndY) {
-            // Update UI for the roof element
+        } else if (x >= doorStartX && x <= doorEndX && y >= doorEndY && y <= doorStartY) {
+            // Update UI for the door element
             elementNameTextView.setText("Door");
             redSeekBar.setProgress(Color.red(door.getColor()));
             greenSeekBar.setProgress(Color.green(door.getColor()));
             blueSeekBar.setProgress(Color.blue(door.getColor()));
-        } else if (x >= chimneyStartX && x <= chimneyStartY && y >= chimneyEndX && y <= chimneyEndY) {
-            // Update UI for the roof element
+        } else if (x >= chimneyStartX && x <= chimneyEndX && y >= chimneyStartY && y <= chimneyEndY) {
+            // Update UI for the chimney element
             elementNameTextView.setText("Chimney");
             redSeekBar.setProgress(Color.red(chimney.getColor()));
             greenSeekBar.setProgress(Color.green(chimney.getColor()));
             blueSeekBar.setProgress(Color.blue(chimney.getColor()));
-        } else if (x >= roofLeftX && x <= roofRightX && y >= roofTopY && y <= roofBottomY) {
+        } else if (x >= roofLeftX && x <= roofRightX && y >= roofBottomY && y <= roofTopY) {
             // Update UI for the roof element
             elementNameTextView.setText("Roof");
             redSeekBar.setProgress(Color.red(roof.getColor()));
@@ -216,6 +218,14 @@ public class Face extends SurfaceView  {
             redSeekBar.setProgress(Color.red(house.getColor()));
             greenSeekBar.setProgress(Color.green(house.getColor()));
             blueSeekBar.setProgress(Color.blue(house.getColor()));
+        }
+
+        if (lastTappedElement != null) {
+            int red = redSeekBar.getProgress();
+            int green = greenSeekBar.getProgress();
+            int blue = blueSeekBar.getProgress();
+            lastTappedElement.setColor(Color.rgb(red, green, blue));
+            invalidate(); // Redraw the view
         }
     }
 
@@ -230,6 +240,29 @@ public class Face extends SurfaceView  {
 
         // Invalidate the view to trigger a redraw with the updated colors
         invalidate();
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        // Check if the SeekBar change was initiated by the user
+        if (fromUser) {
+            // Update the color of the most recently tapped element
+            if (lastTappedElement != null) {
+                int red = redSeekBar.getProgress();
+                int green = greenSeekBar.getProgress();
+                int blue = blueSeekBar.getProgress();
+                lastTappedElement.setColor(Color.rgb(red, green, blue));
+                invalidate(); // Redraw the view
+            }
+        }
+    }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 
 
@@ -251,26 +284,9 @@ public class Face extends SurfaceView  {
             return color;
         }
 
-//        // Methods to get start and end coordinates of elements
-//        float getStartX() {
-//            // Implement logic to get start X position
-//            return 0;
-//        }
-//
-//        float getStartY() {
-//            // Implement logic to get start Y position
-//            return 0;
-//        }
-//
-//        float getEndX() {
-//            // Implement logic to get end X position
-//            return 0;
-//        }
-//
-//        float getEndY() {
-//            // Implement logic to get end Y position
-//            return 0;
-//        }
+        public void setColor(int rgb) {
+            this.color = rgb;
+        }
     }
 
 //end of face
